@@ -1,6 +1,7 @@
 import express from "express";
-import bodyParser from 'body-parser';
-import { MongoClient } from 'mongodb';
+import bodyParser from "body-parser";
+import { MongoClient } from "mongodb";
+import path from "path";
 
 // Fake database: delete after creating mongo database
 // const articlesInfo = {
@@ -19,6 +20,8 @@ import { MongoClient } from 'mongodb';
 // };
 
 const app= express();
+
+app.use(express.static(path.join(__dirname, "/build")));
 
 app.use(bodyParser.json());
 
@@ -89,5 +92,12 @@ app.post("/api/articles/:name/add-comment", (req, res) => {
 
     // res.status(200).send(articlesInfo[articleName]);
 });
+
+// this needs to be after the last api route 
+//   -> all reqs that aren't caught by api routes should be passed onto our frontend app 
+//   -> navigate between pages and process urls correctly
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname + "/build/index.html"));
+})
 
 app.listen(8000, () => console.log("Listening on port 8000"));
