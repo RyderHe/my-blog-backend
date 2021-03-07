@@ -24,7 +24,6 @@ app.use(bodyParser.json());
 
 const withDB = async (operations, res) => {
     try {
-        console.log("123123");
         const client = await MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true });
 
         const db = client.db('my-blog');
@@ -33,7 +32,6 @@ const withDB = async (operations, res) => {
     
         client.close(); // close connection to database
     } catch (error) {
-        console.log("123");
         res.status(500).json({ message: "Error connecting to db", error });
     }
 }
@@ -78,7 +76,7 @@ app.post("/api/articles/:name/add-comment", (req, res) => {
         const articleInfo = await db.collection("articles").findOne({ name: articleName });
         await db.collection("articles").updateOne({ name: articleName }, {
             "$set": {
-                commets: articleInfo.comments.concat({ username, text})
+                comments: articleInfo.comments.concat({ username, text})
             }
         });
 
